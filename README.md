@@ -1,4 +1,4 @@
-# kdy-kandinsky-pattern-generator
+# Kandinsky Pattern Generator
 
 A **Kandinsky Pattern** is of a set of Kandinsky Figures following a "Model of Truth", i.e. for each  Kandinsky Figure, we can tell if it belongs to the Kandinsky Pattern and why this is the case.
 

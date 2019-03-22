@@ -9,5 +9,5 @@
     * `pip install -r requirements.txt`
 
 * DEVELOPMENT TOOLS
-    * install Visual Studio Code inclduing the Python extension
+    * install Visual Studio Code with the Python extension
     * in this dirctory type in a terminal `code .`

@@ -10,4 +10,4 @@
 
 * DEVELOPMENT TOOLS
     * install Visual Studio Code inclduing the Python extension
-    * in this dirctory type in a terminal code .
+    * in this dirctory type in a terminal `code .`

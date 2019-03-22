@@ -8,6 +8,10 @@ class KandinskyTruth:
       self.u = universe
       
    @abc.abstractmethod
+   def  humanDescription (self):
+      pass
+   
+   @abc.abstractmethod
    def  isfuzzy (self):
       pass
 

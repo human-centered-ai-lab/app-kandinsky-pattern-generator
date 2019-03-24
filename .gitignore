@@ -1,3 +1,4 @@
 src/kandinsky-patterns-env
 src/.vscode
+test
 *.pyc

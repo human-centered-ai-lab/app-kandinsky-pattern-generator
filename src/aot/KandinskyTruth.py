@@ -1,7 +1,6 @@
 import abc
-import KandinskyUniverse
 
-class KandinskyTruth:
+class KandinskyTruthInterfce:
 
    def __init__(self, universe):
       # u = a kandisky univere class
@@ -9,23 +8,24 @@ class KandinskyTruth:
       
    @abc.abstractmethod
    def  humanDescription (self):
-      pass
+      return ""
    
    @abc.abstractmethod
    def  isfuzzy (self):
-      pass
+      return False
 
    @abc.abstractmethod
    def  true_kf (self, n=1):
-      pass
+      return []
 
    @abc.abstractmethod
    def  false_kf (self, n=1):
-      pass
+      return []
 
    @abc.abstractmethod
+   def  almost_true_kf (self, n=1):
+      return []
+      
+   @abc.abstractmethod
    def  kf (self, p, n=1):
-      pass
-
-   def  random_kf (self, p, n=1):
-      pass
+      return []

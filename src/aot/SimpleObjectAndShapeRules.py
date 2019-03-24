@@ -4,48 +4,76 @@ import random
 
 from  .KandinskyTruth    import KandinskyTruthInterfce
 from  .KandinskyUniverse import kandinskyShape, overlaps
+from  .RandomKandinskyFigure import Random
 
-
-
-class RandomObjects (KandinskyTruthInterfce):
+class ContainsRedObjects (KandinskyTruthInterfce):
+   
+   def  isfuzzy (self):
+      return false
 
    def  humanDescription (self):
-      return "random kandinsky figure"
-
-   def  _randomkf(self, n):
-      kf = []
-      for i in range (n):
-         o = kandinskyShape()
-         o.color = random.choice (self.u.kandinsky_colors)
-         o.shape = random.choice (self.u.kandinsky_shapes)
-         o.size  = 0.1+ 0.4 * random.random ()
-         o.x     = o.size/2 + random.random () * (1-o.size )
-         o.y     = o.size/2 + random.random () * (1-o.size )
-         kf.append (o)
-      return kf
+      return "contain at least a red object"
 
    def  true_kf (self, n=1):
       kfs = []
-      for i in range (n):
-         kf = self._randomkf(4)
-         while overlaps (kf):
-            kf = self._randomkf(4)
-         kfs.append(kf)
-      return kfs   
+      i = 0
+      randomKFgenerator = Random (self.u,self.min,self.max)
+      while i<n:
+         kf = randomKFgenerator.true_kf(1)[0]
+         hasRed = False
+         for s in kf:
+            if s.color == "red":
+               hasRed = True   
+         if hasRed:
+            kfs.append (kf)
+            i = i + 1
+      return kfs
+
+   def  false_kf (self, n=1):
+      kfs = []
+      i = 0
+      randomKFgenerator = Random (self.u,self.min,self.max)
+      kfs = randomKFgenerator.true_kf(n)
+      for kf in kfs:
+         for s in kf:
+            if s.color == "red":
+               s.color = "blue"
+      return kfs
 
 
-class ContainsRedObjects (KandinskyTruthInterfce):
+class ContainsTriangles (KandinskyTruthInterfce):
 
    def  isfuzzy (self):
       return false
 
    def  humanDescription (self):
-      return "contain at least a read object"
+      return "contain at least a triangle object"
 
    def  true_kf (self, n=1):
-      return []
+      kfs = []
+      i = 0
+      randomKFgenerator = Random (self.u,self.min,self.max)
+      while i<n:
+         kf = randomKFgenerator.true_kf(1)[0]
+         hasT = False
+         for s in kf:
+            if s.shape == "triangle":
+               hasT = True   
+         if hasT:
+            kfs.append (kf)
+            i = i + 1
+      return kfs
 
    def  false_kf (self, n=1):
-      return []
+      kfs = []
+      i = 0
+      randomKFgenerator = Random (self.u,self.min,self.max)
+      kfs = randomKFgenerator.true_kf(n)
+      for kf in kfs:
+         for s in kf:
+            if s.shape == "triangle":
+               s.shape = "circle"
+               s.size = 0.5 * s.size 
+      return kfs
 
 

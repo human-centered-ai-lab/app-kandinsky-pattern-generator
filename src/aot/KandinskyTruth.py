@@ -2,9 +2,10 @@ import abc
 
 class KandinskyTruthInterfce:
 
-   def __init__(self, universe):
-      # u = a kandisky univere class
+   def __init__(self, universe, min = 4, max = 4 ):
       self.u = universe
+      self.min = min
+      self.max = max
       
    @abc.abstractmethod
    def  humanDescription (self):

@@ -8,44 +8,26 @@ if (__name__ == '__main__'):
 
     print('Welcome to the Kandinsky Figure Generator')
     u = KandinskyUniverse.SimpleUniverse()
- 
 
-    shapegenerator = ShapeOnShapes.ShapeOnShape(u,0,40)
-    print("the pattern is: ", shapegenerator.humanDescription())
-    
-    os.makedirs("../test/shapesOnShapes/true", exist_ok=True)
-    os.makedirs("../test/shapesOnShapes/false", exist_ok=True)
-    kfs = shapegenerator.true_kf (50)
-    i = 0
-    for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        filename = "../test/shapesOnShapes/true/%06d" % i
-        image.save (filename+".png")
-        i = i + 1
 
-    kfs = shapegenerator.almost_true_kf (50)
-    i = 0
-    for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        filename = "../test/shapesOnShapes/false/%06d" % i
-        image.save (filename+".png")
-        i = i + 1
 
-    kfs = randomKFgenerator.true_kf (20)
+
+    randomKFgenerator = RandomKandinskyFigure.Random (u,4,4)
+    kfs = randomKFgenerator.true_kf (50)
     os.makedirs("../test/randomkf", exist_ok=True)
 
-
-    randomKFgenerator = RandomKandinskyFigure.Random (u,40,40)
+   
     print("the pattern is: ", randomKFgenerator.humanDescription())
     
-    kfs = randomKFgenerator.true_kf (20)
+    kfs = randomKFgenerator.true_kf (50)
     os.makedirs("../test/randomkf", exist_ok=True)
     i = 0
     for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf, 600, 4)
+        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
         filename = "../test/randomkf/%06d" % i
         image.save (filename+".png")
         i = i + 1
+        print (i)
 
     os.makedirs("../test/onered/true", exist_ok=True)
     os.makedirs("../test/onered/false", exist_ok=True)
@@ -72,7 +54,7 @@ if (__name__ == '__main__'):
     os.makedirs("../test/onetriangle/true", exist_ok=True)
     os.makedirs("../test/onetriangle/false", exist_ok=True)
 
-    triangleobjects = SimpleObjectAndShapeRules.ContainsTriangles(u,4,4)
+    triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
     print("the pattern is: ", triangleobjects.humanDescription())
    
     kfs = triangleobjects.true_kf (50)

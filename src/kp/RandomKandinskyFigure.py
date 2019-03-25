@@ -54,6 +54,7 @@ class Random (KandinskyTruthInterfce):
             i = i + 1
          else: 
             maxsize = maxsize*0.95   
+            print (maxsize)
       return kf
 
    def  true_kf (self, n=1):

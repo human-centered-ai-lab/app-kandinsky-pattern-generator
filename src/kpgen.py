@@ -1,7 +1,7 @@
 import os
 
 from PIL import Image
-from aot import KandinskyUniverse, RandomKandinskyFigure, SimpleObjectAndShapeRules
+from aot import KandinskyUniverse, RandomKandinskyFigure, SimpleObjectAndShapeRules, ShapeOnShapes
 
 
 if (__name__ == '__main__'):
@@ -9,6 +9,35 @@ if (__name__ == '__main__'):
     print('Welcome to the Kandinsky Figure Generator')
     u = KandinskyUniverse.SimpleUniverse()
  
+
+    shapegenerator = ShapeOnShapes.ShapeOnShape(u,0,40)
+    print("the pattern is: ", shapegenerator.humanDescription())
+    
+    os.makedirs("../test/shapes/t", exist_ok=True)
+    os.makedirs("../test/shapes/f", exist_ok=True)
+    kfs = shapegenerator.true_kf (25)
+    i = 0
+    for kf in kfs:
+        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
+        filename = "../test/shapes/t/%06d" % i
+        image.save (filename+".png")
+        i = i + 1
+
+    kfs = shapegenerator.almost_true_kf (25)
+    i = 0
+    for kf in kfs:
+        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
+        filename = "../test/shapes/f/%06d" % i
+        image.save (filename+".png")
+        i = i + 1
+
+    exit ()
+
+
+    kfs = randomKFgenerator.true_kf (20)
+    os.makedirs("../test/randomkf", exist_ok=True)
+
+
     randomKFgenerator = RandomKandinskyFigure.Random (u,40,40)
     print("the pattern is: ", randomKFgenerator.humanDescription())
     
@@ -27,7 +56,7 @@ if (__name__ == '__main__'):
     redobjects = SimpleObjectAndShapeRules.ContainsRedObjects(u,4,4)
     print("the pattern is: ", redobjects.humanDescription())
    
-    kfs = redobjects.true_kf (20)
+    kfs = redobjects.true_kf (5)
     i = 0
     for kf in kfs:
         image = KandinskyUniverse.kandinskyFigureAsImage (kf)
@@ -35,7 +64,7 @@ if (__name__ == '__main__'):
         image.save (filename+".png")
         i = i + 1 
     
-    kfs = redobjects.false_kf (20)   
+    kfs = redobjects.false_kf (5)   
     i = 0 
     for kf in kfs:
         image = KandinskyUniverse.kandinskyFigureAsImage (kf)

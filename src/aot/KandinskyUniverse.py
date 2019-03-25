@@ -8,9 +8,8 @@ class kandinskyShape:
   def __init__(self):
           self.shape = "circle"
           self.color = "red"
-          self.shape = 0.5
           self.x     = 0.5
-          self.x     = 0.5
+          self.y     = 0.5
   
   def __str__(self):  
       return self.color + " " +  self.shape + " (" + \

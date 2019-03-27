@@ -1,74 +1,49 @@
 import os
 
 from PIL import Image
-from kp import KandinskyUniverse, RandomKandinskyFigure, SimpleObjectAndShape, ShapeOnShapes
+from kp import KandinskyUniverse, RandomKandinskyFigure, SimpleObjectAndShape, ShapeOnShapes, KandinskyCaptions
 
+u  = KandinskyUniverse.SimpleUniverse()
+cg = KandinskyCaptions.CaptionGenerator (u)
+
+
+def generateImagesAndCaptions (basedir, kfgen, n=50):
+    os.makedirs(basedir, exist_ok=True)
+    for (i, kf) in enumerate(kfgen.true_kf (n)):
+        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
+        image.save (basedir + "/%06d" % i + ".png")
+        print ("========================")
+        print (cg.colorShapesSize (kf))
+        print (cg.numbers (kf))
+        print (cg.pairs (kf))
+    
+def generateClasses (basedir, kfgen, n=50,  contrafactuals = False):
+    os.makedirs(basedir + "/true", exist_ok=True)
+    os.makedirs(basedir + "/false", exist_ok=True)
+    for (i, kf) in enumerate(kfgen.true_kf (n)):
+        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
+        image.save (basedir + "/true/%06d" % i + ".png")
+    for (i, kf) in  enumerate(kfgen.false_kf (n)):
+        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
+        image.save (basedir + "/false/%06d" % i + ".png")
+    if (contrafactuals):
+        os.makedirs(basedir + "/contrafactuals", exist_ok=True)
+        for (i, kf) in enumerate(kfgen.almost_true_kf (n)):
+            image = KandinskyUniverse.kandinskyFigureAsImage (kf)
+            image.save (basedir + "/contrafactuals/%06d" % i + ".png")
 
 if (__name__ == '__main__'):
 
-    print('Welcome to the Kandinsky Figure Generator')
-    u = KandinskyUniverse.SimpleUniverse()
+    print('Welcome to the Kandinsky Figure Generator') 
 
-
-
-
-    randomKFgenerator = RandomKandinskyFigure.Random (u,4,4)
-    kfs = randomKFgenerator.true_kf (50)
-    os.makedirs("../test/randomkf", exist_ok=True)
-
-   
-    print("the pattern is: ", randomKFgenerator.humanDescription())
-    
-    kfs = randomKFgenerator.true_kf (50)
-    os.makedirs("../test/randomkf", exist_ok=True)
-    i = 0
-    for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        filename = "../test/randomkf/%06d" % i
-        image.save (filename+".png")
-        i = i + 1
-        print (i)
-
-    os.makedirs("../test/onered/true", exist_ok=True)
-    os.makedirs("../test/onered/false", exist_ok=True)
+    randomkf =  RandomKandinskyFigure.Random (u,4,4)
+    generateImagesAndCaptions ("../test/randomkf", randomkf, 50)
 
     redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
-    print("the pattern is: ", redobjects.humanDescription())
-   
-    kfs = redobjects.true_kf (50)
-    i = 0
-    for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        filename = "../test/onered/true/%06d" % i
-        image.save (filename+".png")
-        i = i + 1 
-    
-    kfs = redobjects.false_kf (50)   
-    i = 0 
-    for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        filename = "../test/onered/false/%06d" % i
-        image.save (filename+".png")
-        i = i + 1        
-
-    os.makedirs("../test/onetriangle/true", exist_ok=True)
-    os.makedirs("../test/onetriangle/false", exist_ok=True)
+    generateClasses ("../test/onered", redobjects, 50)
 
     triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
-    print("the pattern is: ", triangleobjects.humanDescription())
-   
-    kfs = triangleobjects.true_kf (50)
-    i = 0
-    for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        filename = "../test/onetriangle/true/%06d" % i
-        image.save (filename+".png")
-        i = i + 1 
-    
-    kfs = triangleobjects.false_kf (50)   
-    i = 0 
-    for kf in kfs:
-        image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        filename = "../test/onetriangle/false/%06d" % i
-        image.save (filename+".png")
-        i = i + 1        
+    generateClasses ("../test/onetriangle", triangleobjects, 50)
+
+    shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
+    generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, 50, contrafactuals = True)

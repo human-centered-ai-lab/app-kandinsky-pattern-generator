@@ -4,6 +4,7 @@ import math
 
 from  .KandinskyTruth    import KandinskyTruthInterfce
 from  .KandinskyUniverse import kandinskyShape, overlaps
+from  .RandomKandinskyFigure import Random
 
 
 class ShapeOnShape (KandinskyTruthInterfce):
@@ -42,14 +43,16 @@ class ShapeOnShape (KandinskyTruthInterfce):
       x     = 0.4 + random.random () * 0.2 
       y     = 0.4 + random.random () * 0.2 
       r     = 0.4 - min ( abs (0.5 - x), abs (0.5 - y))
-      n     = int (r / 0.07)
-      if n < self.min:   n = self.min
-      if n > self.max:   n = self.max
+      m     = 4 * int (r / 0.1)
+      if m < self.min:   m = self.min
+      if m > self.max:   m = self.max
 
       minx = x - r/2
       maxx = x + r/2
       miny = y - r/2
       maxy = y + r/2
+
+      n = int (m/4)
 
       dx = r / n 
       for i in range (n+1):  
@@ -103,28 +106,26 @@ class ShapeOnShape (KandinskyTruthInterfce):
       return kf
 
    def _shapesOnShapes (self, truth):
-      so = 0.05
+      so = 0.04
       kf = self._bigCircle (so, truth) + self._bigSquare (so, truth)
       t = 0
       tt = 0
       maxtry = 1000
       while overlaps (kf) and (t < maxtry):
          kf = self._bigCircle (so, truth) + self._bigSquare (so, truth)
-         if tt  >  100:
+         if tt  >  10:
             tt = 0
             so = so * 0.95
+#            print ("getting smaller")
          tt = tt +1
          t = t + 1
       return kf
 
-
-
    def  true_kf (self, n=1):
       kfs = []
-      for i in range (n):
+      for i in range (n):        
          kf = self._shapesOnShapes (True)
          kfs.append(kf)
-         print (i)
       return kfs   
 
    def  almost_true_kf (self, n=1):
@@ -132,5 +133,10 @@ class ShapeOnShape (KandinskyTruthInterfce):
       for i in range (n):
          kf = self._shapesOnShapes (False)
          kfs.append(kf)
-         print (i)
-      return kfs   
+      return kfs 
+
+   def  false_kf (self, n=1):
+      # we are almost shure that random image does not conatain shapes on shapes 
+      t = self.min+self.max
+      rg = Random (self.u,t,t)
+      return rg.true_kf (n)

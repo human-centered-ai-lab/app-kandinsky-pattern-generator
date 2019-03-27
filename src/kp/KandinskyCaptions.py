@@ -1,73 +1,92 @@
 import math
 
+import inflect
 import numpy as np
 from PIL import Image, ImageDraw
 
+inflectEng = inflect.engine()
 
-class kandinskyShape:
-  def __init__(self):
-          self.shape = "circle"
-          self.color = "red"
-          self.x     = 0.5
-          self.y     = 0.5
+class CaptionGenerator:
+
+    def __init__(self, universe):
+        self.u = universe
+      
+    def colorShapesSize (self, kf, prefix = ''):
+        descrition = prefix
+        multipleshape = False
+        addsizeattribute = False
+
+        mins = 999999999999
+        maxs = 0
+        for s in kf:
+            if s.size < mins: mins = s.size
+            if s.size > maxs: maxs = s.size    
+        d = maxs - mins
+        if d > 0.2:
+            addsizeattribute = True
+            smallsizecheck = mins + d/3
+            bigsizecheck = maxs - d/3
+
+        for s in kf:
+            if multipleshape: descrition = descrition + " and " + prefix 
+            if addsizeattribute:    
+                sizestring = ''
+                if s.size < smallsizecheck: sizestring = 'small'
+                if s.size > bigsizecheck:   sizestring = 'big'
+                if len (sizestring) > 0:  descrition = descrition + sizestring +  " "
+            descrition = descrition  +  s.color +  " " +  s.shape
+            multipleshape = True 
+        
+        return descrition
   
-  def __str__(self):  
-      return self.color + " " +  self.shape + " (" + \
-             str(self.size) + "," + str(self.x) + "," + str(self.y) + ")"
+  
+    def numbers (self, kf):  
+        descrition =  self.colorShapesSize (kf, 'one ')
+        ns = {}
+        nc = {}
+        for s in self.u.kandinsky_shapes: ns[s] = 0
+        for s in self.u.kandinsky_colors: nc[s] = 0
+        for s in kf:
+            ns[s.shape] += 1
+            nc[s.color] += 1
+        maxcolor = ''
+        maxshape = ''
+        maxnumcolor = 0
+        maxnumshap  = 0
+        for c in self.u.kandinsky_colors: 
+            if nc[c] > maxnumcolor:
+                maxnumcolor = nc[c]
+                maxcolor = c
+        for s in self.u.kandinsky_shapes: 
+            if ns[s] > maxnumshap:
+                maxnumshap = ns[s]
+                maxshape = s
 
-class SimpleUniverse:
-   kandinsky_colors = ['red','yellow', 'blue']
-   kandinsky_shapes = ['square', 'circle', 'triangle']
+        if maxnumcolor > 1 or maxnumshap > 1:
+            if maxnumcolor >= maxnumshap:
+                descrition =  inflectEng.number_to_words(maxnumcolor) + " " + maxcolor + " shapes"
+            else:  
+                descrition = inflectEng.number_to_words(maxnumcolor) + " " + maxshape + "s"
+            if (maxnumcolor == maxnumshap):
+                descrition = inflectEng.number_to_words(maxnumcolor) + " " + maxcolor + " " + maxshape + "s"
+            
+        return descrition  
+    
 
-class ExtendedUniverse:
-   # still have to add drawing functions below 
-   kandinsky_colors = ['red', 'yellow', 'blue', "green", "orange"]
-   kandinsky_shapes = ['square', 'circle', 'triangle', "star"]
-
-
-def square (d,cx,cy,s,f):
-        s = 0.7 * s
-        d.rectangle(((cx-s/2, cy-s/2), (cx+s/2, cy+s/2)), fill=f)
-
-def circle (d,cx,cy,s,f):
-        # correct the size to  the same area as an square
-        s = 0.7 * s * 4 / math.pi 
-        d.ellipse(((cx-s/2, cy-s/2), (cx+s/2, cy+s/2)), fill=f)
-
-def triangle (d,cx,cy,s,f):
-        r = math.radians(30)
-        # correct the size to  the same area as an square
-        s = 0.7 * s * 3 * math.sqrt(3) / 4
-        dx = s * math.cos (r) / 2
-        dy = s * math.sin (r) / 2
-        d.polygon([(cx,cy-s/2), (cx+dx, cy+dy), (cx-dx,cy+dy)], fill = f)
-
-
-def kandinskyFigureAsImage (shapes, width=200, subsampling = 2):
-
-  image = Image.new("RGBA", (subsampling*width,subsampling*width), (220,220,220,255))
-  d = ImageDraw.Draw(image)
-  w = subsampling * width
-
-  for s in shapes:
-      globals()[s.shape]( d, w*s.x, w*s.y, w*s.size, s.color)
-  if subsampling>1:
-    image.thumbnail( (width,width), Image.ANTIALIAS)
-
-  return image
-
-def overlaps (shapes, width=1024):
-
-  image = Image.new("L", (width,width), 0)
-  sumarray = np.array(image)
-  d = ImageDraw.Draw(image)
-  w = width
-
-  for s in shapes:
-    image      = Image.new("L", (width,width), 0)
-    d = ImageDraw.Draw(image)
-    globals()[s.shape]( d, w*s.x, w*s.y, w*s.size, 10)
-    sumarray = sumarray + np.array(image)
-
-  sumimage = Image.fromarray (sumarray)
-  return sumimage.getextrema ()[1] > 10
+    def pairs (self, kf):  
+        # thats not perfect, it e.g. does not describe two pairs, or a pair, if some other shape has 3 objects
+        descrition =  ""
+        ns = {}
+        for s in self.u.kandinsky_shapes: 
+            ns[s] = 0
+        for s in kf:
+            ns[s.shape] += 1
+        maxshape = ''
+        maxnumshap  = 0
+        for s in self.u.kandinsky_shapes: 
+            if ns[s] > maxnumshap:
+                maxnumshap = ns[s]
+                maxshape = s
+        if maxnumshap ==  2:
+            descrition = "a pair of "+ maxshape + "s"    
+        return descrition

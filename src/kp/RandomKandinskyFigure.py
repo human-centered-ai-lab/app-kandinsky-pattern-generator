@@ -34,8 +34,14 @@ class Random (KandinskyTruthInterfce):
       if n == 5: maxsize = 0.5
       if n == 6: maxsize = 0.4
       if n == 7: maxsize = 0.3
-      if n > 7: maxsize = 0.2
+      if n > 7: 
+         m = n-7
+         maxsize = 0.2 - m * (0.2)/70.0 
 
+      if maxsize < 0.001: maxsize =  0.001
+      if minsize > maxsize: minsize =  maxsize
+
+#      print (n, minsize, maxsize)
       i = 0
       maxtry= 20
       while i<n:
@@ -54,7 +60,8 @@ class Random (KandinskyTruthInterfce):
             i = i + 1
          else: 
             maxsize = maxsize*0.95   
-            print (maxsize)
+            minsize = minsize*0.95   
+
       return kf
 
    def  true_kf (self, n=1):

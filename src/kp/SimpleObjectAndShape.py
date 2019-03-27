@@ -66,7 +66,6 @@ class ContainsTriangles (KandinskyTruthInterfce):
 
    def  false_kf (self, n=1):
       kfs = []
-      i = 0
       randomKFgenerator = Random (self.u,self.min,self.max)
       kfs = randomKFgenerator.true_kf(n)
       for kf in kfs:

@@ -1,4 +1,5 @@
 import math
+from collections import defaultdict
 
 import inflect
 import numpy as np
@@ -39,54 +40,79 @@ class CaptionGenerator:
         
         return descrition
   
-  
-    def numbers (self, kf):  
-        descrition =  self.colorShapesSize (kf, 'one ')
-        ns = {}
-        nc = {}
-        for s in self.u.kandinsky_shapes: ns[s] = 0
-        for s in self.u.kandinsky_colors: nc[s] = 0
-        for s in kf:
-            ns[s.shape] += 1
-            nc[s.color] += 1
+
+    def _getMaxShapesAndColorsPatterns (self, kf):
+        result = []
+        ncs = defaultdict(dict)
+        nc = defaultdict(dict)
+     
+        for s in self.u.kandinsky_shapes: 
+            for c in self.u.kandinsky_colors: 
+                ncs[s][c] = 0      
+        for c in self.u.kandinsky_colors: 
+                nc[c] = 0      
+     
+        for s in kf: 
+            ncs[s.shape][s.color] = ncs[s.shape][s.color] + 1
+            nc[s.color] = nc[s.color] + 1      
+     
         maxcolor = ''
         maxshape = ''
-        maxnumcolor = 0
-        maxnumshap  = 0
-        for c in self.u.kandinsky_colors: 
-            if nc[c] > maxnumcolor:
-                maxnumcolor = nc[c]
-                maxcolor = c
-        for s in self.u.kandinsky_shapes: 
-            if ns[s] > maxnumshap:
-                maxnumshap = ns[s]
-                maxshape = s
-
-        if maxnumcolor > 1 or maxnumshap > 1:
-            if maxnumcolor >= maxnumshap:
-                descrition =  inflectEng.number_to_words(maxnumcolor) + " " + maxcolor + " shapes"
-            else:  
-                descrition = inflectEng.number_to_words(maxnumcolor) + " " + maxshape + "s"
-            if (maxnumcolor == maxnumshap):
-                descrition = inflectEng.number_to_words(maxnumcolor) + " " + maxcolor + " " + maxshape + "s"
-            
-        return descrition  
-    
-
-    def pairs (self, kf):  
-        # thats not perfect, it e.g. does not describe two pairs, or a pair, if some other shape has 3 objects
-        descrition =  ""
-        ns = {}
-        for s in self.u.kandinsky_shapes: 
-            ns[s] = 0
+        maxn = 0
         for s in kf:
-            ns[s.shape] += 1
-        maxshape = ''
-        maxnumshap  = 0
-        for s in self.u.kandinsky_shapes: 
-            if ns[s] > maxnumshap:
-                maxnumshap = ns[s]
-                maxshape = s
-        if maxnumshap ==  2:
-            descrition = "a pair of "+ maxshape + "s"    
-        return descrition
+            if ncs[s.shape][s.color] > maxn:
+                maxn = ncs[s.shape][s.color] 
+                maxcolor = s.color
+                maxshape = s.shape
+
+        maxo = 0
+        for s in kf:
+            if nc[s.color] > maxo:
+                maxo = nc[s.color] 
+                maxcoloro = s.color
+
+        # color is stringer than object pairs
+        colordominance = False
+        if maxo > maxn:
+            maxn = maxo
+            maxcolor = maxcoloro
+            colordominance = True
+
+        if maxn > 0:
+            kfnew = []
+            if colordominance:
+                maxshape = 'object'
+                for s in kf:
+                    if s.color != maxcolor:  kfnew.append (s)
+            else:  
+                for s in kf:  
+                    if s.shape !=  maxshape or s.color != maxcolor:  kfnew.append (s)
+
+            r_rest = []     
+#            print ("the rest has length ", len(kfnew))   
+            if len(kfnew) > 0:
+                r_rest = self._getMaxShapesAndColorsPatterns (kfnew)
+
+            descrition = inflectEng.number_to_words(maxn) + " " + maxcolor + " " + maxshape 
+            if maxn > 1:
+                descrition = descrition + "s"
+            result = [{'n': maxn, 'd': descrition }] + r_rest
+        return result        
+
+
+    def numbers (self, kf):  
+        descrition = ''
+        unsortedDesc = self._getMaxShapesAndColorsPatterns (kf)
+        if len(unsortedDesc) > 0:
+            sortesDesc   = sorted(unsortedDesc, reverse=True, key=lambda k: k['n']) 
+            multiple = False
+            descrition = []
+
+            for d in sortesDesc:
+                if multiple: 
+                    descrition = descrition + " and " + d['d']  
+                else:
+                    descrition = d['d']  
+                    multiple = True 
+
+        return descrition  

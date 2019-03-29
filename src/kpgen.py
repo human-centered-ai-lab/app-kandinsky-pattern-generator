@@ -9,13 +9,17 @@ cg = KandinskyCaptions.CaptionGenerator (u)
 
 def generateImagesAndCaptions (basedir, kfgen, n=50):
     os.makedirs(basedir, exist_ok=True)
+    capt_color_shape_size_file = open(basedir + "/color_shape_size.cap", "w")
+    capt_numbers  = open(basedir + "/numbers.cap", "w")
     for (i, kf) in enumerate(kfgen.true_kf (n)):
         image = KandinskyUniverse.kandinskyFigureAsImage (kf)
-        image.save (basedir + "/%06d" % i + ".png")
-        print ("========================")
-        print (cg.colorShapesSize (kf))
-        print (cg.numbers (kf))
-        print (cg.pairs (kf))
+        image.save (basedir + "/%06d" % i + ".png")       
+        capt_color_shape_size_file.write(str(i) + '\t' +  cg.colorShapesSize (kf, 'one ')+'\n' )
+        capt_numbers.write( str(i) + '\t' +  cg.numbers (kf)+  '\n' )
+        print (i, cg.numbers (kf))
+    capt_color_shape_size_file.close()
+    capt_numbers.close()
+ 
     
 def generateClasses (basedir, kfgen, n=50,  contrafactuals = False):
     os.makedirs(basedir + "/true", exist_ok=True)
@@ -36,14 +40,14 @@ if (__name__ == '__main__'):
 
     print('Welcome to the Kandinsky Figure Generator') 
 
-    randomkf =  RandomKandinskyFigure.Random (u,4,4)
+    randomkf =  RandomKandinskyFigure.Random (u,5,7)
     generateImagesAndCaptions ("../test/randomkf", randomkf, 50)
 
-    redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
-    generateClasses ("../test/onered", redobjects, 50)
+    #redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
+    #generateClasses ("../test/onered", redobjects, 50)
 
-    triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
-    generateClasses ("../test/onetriangle", triangleobjects, 50)
+    #triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
+    #generateClasses ("../test/onetriangle", triangleobjects, 50)
 
-    shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
-    generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, 50, contrafactuals = True)
+    #shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
+    #generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, 50, contrafactuals = True)

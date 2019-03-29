@@ -16,7 +16,6 @@ def generateImagesAndCaptions (basedir, kfgen, n=50):
         image.save (basedir + "/%06d" % i + ".png")       
         capt_color_shape_size_file.write(str(i) + '\t' +  cg.colorShapesSize (kf, 'one ')+'\n' )
         capt_numbers.write( str(i) + '\t' +  cg.numbers (kf)+  '\n' )
-        print (i, cg.numbers (kf))
     capt_color_shape_size_file.close()
     capt_numbers.close()
  
@@ -43,11 +42,11 @@ if (__name__ == '__main__'):
     randomkf =  RandomKandinskyFigure.Random (u,5,7)
     generateImagesAndCaptions ("../test/randomkf", randomkf, 50)
 
-    #redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
-    #generateClasses ("../test/onered", redobjects, 50)
+    redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
+    generateClasses ("../test/onered", redobjects, 50)
 
-    #triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
-    #generateClasses ("../test/onetriangle", triangleobjects, 50)
+    triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
+    generateClasses ("../test/onetriangle", triangleobjects, 50)
 
-    #shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
-    #generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, 50, contrafactuals = True)
+    shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
+    generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, 50, contrafactuals = True)

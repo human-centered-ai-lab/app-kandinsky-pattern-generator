@@ -10,6 +10,7 @@ class kandinskyShape:
           self.color = "red"
           self.x     = 0.5
           self.y     = 0.5
+          self.size  = 0.5
   
   def __str__(self):  
       return self.color + " " +  self.shape + " (" + \

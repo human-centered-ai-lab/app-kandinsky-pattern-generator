@@ -116,7 +116,6 @@ class ShapeOnShape (KandinskyTruthInterfce):
          if tt  >  10:
             tt = 0
             so = so * 0.95
-#            print ("getting smaller")
          tt = tt +1
          t = t + 1
       return kf
@@ -136,7 +135,7 @@ class ShapeOnShape (KandinskyTruthInterfce):
       return kfs 
 
    def  false_kf (self, n=1):
-      # we are almost shure that random image does not conatain shapes on shapes 
+      # we are  shure that random image does not contain "shapes on shapes" 
       t = self.min+self.max
       rg = Random (self.u,t,t)
       return rg.true_kf (n)

@@ -51,7 +51,6 @@ class CaptionGenerator:
                 ncs[s][c] = 0      
         for c in self.u.kandinsky_colors: 
                 nc[c] = 0      
-     
         for s in kf: 
             ncs[s.shape][s.color] = ncs[s.shape][s.color] + 1
             nc[s.color] = nc[s.color] + 1      
@@ -89,7 +88,6 @@ class CaptionGenerator:
                     if s.shape !=  maxshape or s.color != maxcolor:  kfnew.append (s)
 
             r_rest = []     
-#            print ("the rest has length ", len(kfnew))   
             if len(kfnew) > 0:
                 r_rest = self._getMaxShapesAndColorsPatterns (kfnew)
 
@@ -98,7 +96,6 @@ class CaptionGenerator:
                 descrition = descrition + "s"
             result = [{'n': maxn, 'd': descrition }] + r_rest
         return result        
-
 
     def numbers (self, kf):  
         descrition = ''

@@ -113,3 +113,6 @@ class CaptionGenerator:
                     multiple = True 
 
         return descrition  
+
+    def simpleNumbers (self, kf):  
+        return str(len (kf)) + ", " + inflectEng.number_to_words(len (kf))      

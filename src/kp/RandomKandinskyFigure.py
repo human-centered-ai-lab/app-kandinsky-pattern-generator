@@ -38,10 +38,8 @@ class Random (KandinskyTruthInterfce):
          m = n-7
          maxsize = 0.2 - m * (0.2)/70.0 
 
-      if maxsize < 0.001: maxsize =  0.001
+      if maxsize < 0.04: maxsize =  0.04
       if minsize > maxsize: minsize =  maxsize
-
-#      print (n, minsize, maxsize)
       i = 0
       maxtry= 20
       while i<n:
@@ -64,9 +62,11 @@ class Random (KandinskyTruthInterfce):
 
       return kf
 
+
    def  true_kf (self, n=1):
       kfs = []
       for i in range (n):
          kf = self._randomkf(self.min, self.max)
+         print ("random ", i)
          kfs.append(kf)
       return kfs   

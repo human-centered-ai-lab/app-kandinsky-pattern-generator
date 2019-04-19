@@ -1,6 +1,7 @@
 
 import PIL
 import random
+import math
 
 from  .KandinskyTruth    import KandinskyTruthInterfce
 from  .KandinskyUniverse import kandinskyShape, overlaps
@@ -75,4 +76,54 @@ class ContainsTriangles (KandinskyTruthInterfce):
                s.size = 0.5 * s.size 
       return kfs
 
+class Cells (KandinskyTruthInterfce):
 
+   def _cell (self):
+      o = kandinskyShape()
+      o.color = random.choice (["blue", "yellow"])
+      o.shape = "circle"
+      o.size  = 32.0 * math.pi / 512 / 0.7 / 4
+      o.x     = o.size/2 + random.random () * (1-o.size )
+      o.y     = o.size/2 + random.random () * (1-o.size )
+      return o
+
+   def _cells (self, n):
+      kf = []
+      maxtry = 10
+      i = 0
+      while i<n:
+         kftemp = kf
+         t = 0
+         o = self._cell()
+         kftemp = kf[:]
+         kftemp.append (o)
+         while overlaps (kftemp) and (t < maxtry):
+            o = self._cell()
+            kftemp = kf[:]
+            kftemp.append (o)
+            t = t + 1
+         if (t < maxtry):
+            kf = kftemp[:]
+         i = i + 1   
+      return kf
+
+
+   def  isfuzzy (self):
+      return false
+
+   def  humanDescription (self):
+      return "circles representing two cell types"
+
+   def  true_kf (self, n=1):
+
+      kfs = []
+      i = 0
+      while i<n:
+         print (i)
+         kfs.append (self._cells(32))
+         i = i + 1
+      return kfs
+
+   def  false_kf (self, n=1):
+      kfs = []
+      return kfs

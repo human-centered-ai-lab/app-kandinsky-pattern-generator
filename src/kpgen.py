@@ -48,7 +48,7 @@ if (__name__ == '__main__'):
     print('Welcome to the Kandinsky Figure Generator') 
 
     cellkf  = SimpleObjectAndShape.Cells (u,5,5)
-    generateClasses ("../test/cells", cellkf, 512, 512)
+    generateClasses ("../test/cells", cellkf, 10, 512)
     
     
     # fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,5,5)

@@ -2,3 +2,5 @@ src/kandinsky-patterns-env
 src/.vscode
 test
 *.pyc
+src/kp/Chords.py
+src/makechords.py

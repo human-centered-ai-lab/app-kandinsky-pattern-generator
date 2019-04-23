@@ -27,21 +27,22 @@ class ExtendedUniverse:
 
 
 def square (d,cx,cy,s,f):
-        s = 0.7 * s
+        s = 0.6 * s
         d.rectangle(((cx-s/2, cy-s/2), (cx+s/2, cy+s/2)), fill=f)
 
 def circle (d,cx,cy,s,f):
         # correct the size to  the same area as an square
-        s = 0.7 * s * 4 / math.pi 
+        s =  0.6 * math.sqrt (4 * s * s / math.pi)
         d.ellipse(((cx-s/2, cy-s/2), (cx+s/2, cy+s/2)), fill=f)
 
 def triangle (d,cx,cy,s,f):
         r = math.radians(30)
         # correct the size to  the same area as an square
-        s = 0.7 * s * 3 * math.sqrt(3) / 4
-        dx = s * math.cos (r) / 2
-        dy = s * math.sin (r) / 2
-        d.polygon([(cx,cy-s/2), (cx+dx, cy+dy), (cx-dx,cy+dy)], fill = f)
+        s =  0.6 * math.sqrt (4 * s * s / math.sqrt(3))
+        s =  math.sqrt(3) * s / 3
+        dx = s * math.cos (r) 
+        dy = s * math.sin (r) 
+        d.polygon([(cx,cy-s), (cx+dx, cy+dy), (cx-dx,cy+dy)], fill = f)
 
 
 def kandinskyFigureAsImage (shapes, width=200, subsampling = 2):

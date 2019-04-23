@@ -120,7 +120,7 @@ class Cells (KandinskyTruthInterfce):
       i = 0
       while i<n:
          print (i)
-         kfs.append (self._cells(32))
+         kfs.append (self._cells(100))
          i = i + 1
       return kfs
 

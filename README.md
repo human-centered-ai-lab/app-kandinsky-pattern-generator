@@ -2,7 +2,7 @@
 
 A **Kandinsky Pattern** is defined as a set of Kandinsky Figures following a "Model of Truth", i.e. for each  Kandinsky Figure, we can tell if it belongs to the Kandinsky Pattern and why this is the case.
 
-A **Kandinsky Figure** consists of 1 ... n objects within a defined square with the following assumptions:
+A **Kandinsky Figure** consists of 1 ... n objects within a square with the following conditions:
 
 *  each objects has a 
    - type: *circle*, *square*,  *triangle*, etc. 

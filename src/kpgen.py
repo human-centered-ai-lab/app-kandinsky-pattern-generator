@@ -51,20 +51,23 @@ if (__name__ == '__main__'):
 
     print('Welcome to the Kandinsky Figure Generator') 
 
-    fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,5,5)
-    generateClasses ("../test/number_5", fixednumberskf, 10, contrafactuals = True, width=600)
-    
-    fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,3,3)
-    generateClasses ("../test/number_3", fixednumberskf, 10, contrafactuals = True, width=600)
+    # fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,5,5)
+    # generateClasses ("../test/number_5", fixednumberskf, 10, contrafactuals = True, width=600)
 
-    randomkf =  RandomKandinskyFigure.Random (u,1,10)
-    generateSimpleNumbersCaptions ("../test/randomnumbers", randomkf, 10, width=600)
+    # fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,3,3)
+    # generateClasses ("../test/number_3", fixednumberskf, 10, contrafactuals = True, width=600)
 
-    redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
-    generateClasses ("../test/onered", redobjects, 50, width=600,)
+    # randomkf =  RandomKandinskyFigure.Random (u,1,10)
+    # generateSimpleNumbersCaptions ("../test/randomnumbers", randomkf, 10, width=600)
 
-    triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
-    generateClasses ("../test/onetriangle", triangleobjects, 50, width=600,)
+    # redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
+    # generateClasses ("../test/onered", redobjects, 50, width=600,)
 
-    shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
-    generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, n=100, width=600, contrafactuals = True)
+    # triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
+    # generateClasses ("../test/onetriangle", triangleobjects, 50, width=600,)
+
+    #shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
+    #generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, n=10, width=600, contrafactuals = True)
+
+    twoPairsOnlyOneWithSameColor = SimpleObjectAndShape.twoPairsOnlyOneWithSameColor (u, 4, 4)
+    generateClasses ("../test/twopairs", twoPairsOnlyOneWithSameColor, n=100, width=600, contrafactuals = False)

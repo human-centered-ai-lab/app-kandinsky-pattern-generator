@@ -17,11 +17,12 @@ class ShapeOnShape (KandinskyTruthInterfce):
       x     = 0.4 + random.random () * 0.2 
       y     = 0.4 + random.random () * 0.2 
       r     = 0.3 - min ( abs (0.5 - x), abs (0.5 - y))
-      n     = int (2 * r * math.pi / 0.1)
+      n     = int (2 * r * math.pi / 0.2)
 
       if n < self.min:   n = self.min
       if n > self.max:   n = self.max
-         
+ 
+
       for i in range (n):
           o = kandinskyShape()
           d = i * 2 * math.pi / n
@@ -36,6 +37,85 @@ class ShapeOnShape (KandinskyTruthInterfce):
           o.x     = x + r * math.cos (d) 
           o.y     = y + r * math.sin (d)
           kf.append (o)
+      return kf
+
+
+   def _bigTriangle(self, so, t):
+      kf = []
+      x     = 0.4 + random.random () * 0.2 
+      y     = 0.4 + random.random () * 0.2 
+      r     = 0.3 - min ( abs (0.5 - x), abs (0.5 - y))
+      n     = int (2 * r * math.pi / 0.25)
+
+      innerdegree = math.radians(30)
+      dx = r * math.cos (innerdegree) 
+      dy = r * math.sin (innerdegree) 
+
+      if n < self.min:   n = self.min
+      if n > self.max:   n = self.max
+     
+      n = round(n / 3)  
+
+      xs = x 
+      ys = y - r
+      xe = x + dx
+      ye = y + dy
+      dxi = (xe - xs) / n
+      dyi = (ye - ys) / n
+
+      for i in range (n+1):  
+          o = kandinskyShape()
+          if t:
+             o.color = random.choice (["yellow", "red"])
+             o.shape = random.choice (["circle", "square"])
+          else:
+            o.color = random.choice (self.u.kandinsky_colors)
+            o.shape = random.choice (self.u.kandinsky_shapes)   
+          o.size  = so
+          o.x     = xs +  i * dxi
+          o.y     = ys +  i * dyi
+          kf.append (o)
+
+      xs = x + dx
+      ys = y + dy   
+      xe = x - dx
+      ye = y + dy
+      dxi = (xe - xs) / n
+      dyi = (ye - ys) / n
+
+      for i in range (n):  
+          o = kandinskyShape()
+          if t:
+             o.color = random.choice (["yellow", "red"])
+             o.shape = random.choice (["circle", "square"])
+          else:
+            o.color = random.choice (self.u.kandinsky_colors)
+            o.shape = random.choice (self.u.kandinsky_shapes)   
+          o.size  = so
+          o.x     = xs +  (i+1) * dxi
+          o.y     = ys +  (i+1) * dyi
+          kf.append (o)
+
+      xs = x - dx
+      ys = y + dy  
+      xe = x 
+      ye = y - r
+      dxi = (xe - xs) / n
+      dyi = (ye - ys) / n
+
+      for i in range (n-1):  
+          o = kandinskyShape()
+          if t:
+             o.color = random.choice (["yellow", "red"])
+             o.shape = random.choice (["circle", "square"])
+          else:
+            o.color = random.choice (self.u.kandinsky_colors)
+            o.shape = random.choice (self.u.kandinsky_shapes)   
+          o.size  = so
+          o.x     = xs +  (i+1) * dxi
+          o.y     = ys +  (i+1) * dyi
+          kf.append (o)
+      
       return kf
 
    def _bigSquare (self, so, t):
@@ -107,15 +187,21 @@ class ShapeOnShape (KandinskyTruthInterfce):
 
    def _shapesOnShapes (self, truth):
       so = 0.04
-      kf = self._bigCircle (so, truth) + self._bigSquare (so, truth)
+
+      combis = random.randint(0, 2)
+      if combis == 0:  g = lambda so, truth: self._bigCircle (so, truth) + self._bigSquare (so, truth)
+      if combis == 1:  g = lambda so, truth: self._bigCircle (so, truth) + self._bigTriangle (so, truth)
+      if combis == 2:  g = lambda so, truth: self._bigSquare (so, truth) + self._bigTriangle (so, truth)
+
+      kf = g (so, truth) 
       t = 0
       tt = 0
       maxtry = 1000
       while overlaps (kf) and (t < maxtry):
-         kf = self._bigCircle (so, truth) + self._bigSquare (so, truth)
+         kf = g (so, truth) 
          if tt  >  10:
             tt = 0
-            so = so * 0.95
+            so = so * 0.90
          tt = tt +1
          t = t + 1
       return kf

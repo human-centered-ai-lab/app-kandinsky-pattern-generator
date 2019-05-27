@@ -48,7 +48,7 @@ def triangle (d,cx,cy,s,f):
 
 def kandinskyFigureAsImagePIL (shapes, width=600, subsampling = 4):
 
-  image = Image.new("RGBA", (subsampling*width,subsampling*width), (220,220,220,255))
+  image = Image.new("RGBA", (subsampling*width,subsampling*width), (150,150,150,255))
   d = ImageDraw.Draw(image)
   w = subsampling * width
 
@@ -64,7 +64,7 @@ def kandinskyFigureAsImage (shapes, width=600, subsampling = 4):
 
   w = subsampling * width
   img = np.zeros((w, w, 3), np.uint8)
-  img[:, :] = [128, 128, 128]
+  img[:, :] = [150, 150, 150]
 
   for s in shapes:
       # not sure if this is the right color for openCV

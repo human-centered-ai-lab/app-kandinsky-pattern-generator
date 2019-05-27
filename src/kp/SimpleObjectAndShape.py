@@ -2,6 +2,7 @@
 import PIL
 import random
 import math
+from collections import defaultdict
 
 from  .KandinskyTruth    import KandinskyTruthInterfce
 from  .KandinskyUniverse import kandinskyShape, overlaps
@@ -81,54 +82,93 @@ class ContainsTriangles (KandinskyTruthInterfce):
                s.size = 0.5 * s.size 
       return kfs
 
-class Cells (KandinskyTruthInterfce):
-
-   def _cell (self):
-      o = kandinskyShape()
-      o.color = random.choice (["blue", "yellow"])
-      o.shape = "circle"
-      o.size  = 32.0 * math.pi / 512 / 0.7 / 4
-      o.x     = o.size/2 + random.random () * (1-o.size )
-      o.y     = o.size/2 + random.random () * (1-o.size )
-      return o
-
-   def _cells (self, n):
-      kf = []
-      maxtry = 10
-      i = 0
-      while i<n:
-         kftemp = kf
-         t = 0
-         o = self._cell()
-         kftemp = kf[:]
-         kftemp.append (o)
-         while overlaps (kftemp) and (t < maxtry):
-            o = self._cell()
-            kftemp = kf[:]
-            kftemp.append (o)
-            t = t + 1
-         if (t < maxtry):
-            kf = kftemp[:]
-         i = i + 1   
-      return kf
-
+class twoPairsOnlyOneWithSameColor (KandinskyTruthInterfce):
 
    def  isfuzzy (self):
       return false
 
    def  humanDescription (self):
-      return "circles representing two cell types"
+      return "contains two pairs of objects with the same shape, oene with equal color, one with different color"
+
+   def _gt (self, kf):
+       
+       ns   = defaultdict(dict)
+       ncs  = defaultdict(dict)
+   
+       for s in self.u.kandinsky_shapes: 
+            ns[s] = 0    
+            for c in self.u.kandinsky_colors: 
+                ncs[s][c] = 0     
+
+       for s in kf: 
+            ncs[s.shape][s.color] = ncs[s.shape][s.color] + 1
+            ns[s.shape] = ns[s.shape] + 1   
+       
+       pairs = 0
+       quads = 0
+       p1 = ""
+       p2 = ""
+       for s in self.u.kandinsky_shapes: 
+          if  ns[s] == 2: 
+             pairs = pairs  + 1
+             if p1 == "":
+                p1 = s
+             else:
+                p2 = s
+
+       for s in self.u.kandinsky_shapes: 
+          if  ns[s] == 4:
+             quads = 1
+             p1 = s
+
+       is_valid = False
+       if pairs==2:
+            n_of_same_cols = 0   
+            for c in self.u.kandinsky_colors: 
+               if ncs[p1][c] == 2:
+                  n_of_same_cols = n_of_same_cols + 1
+            for c in self.u.kandinsky_colors: 
+               if ncs[p2][c] == 2:
+                  n_of_same_cols = n_of_same_cols + 1
+            if n_of_same_cols == 1:
+               is_valid = True
+                      
+       if quads==1: 
+          # print ("QUADS")
+          n_of_colors = 0
+          for c in self.u.kandinsky_colors: 
+               if ncs[p1][c] > 0:
+                  n_of_colors = n_of_colors + 1 
+          if (n_of_colors == 3):
+              # only if we have 3 different colors we can have two pairs not with the same colors .....
+              is_valid = True  
+
+       return is_valid
+
+
 
    def  true_kf (self, n=1):
-
       kfs = []
       i = 0
+      randomKFgenerator = Random (self.u, 4,4)
       while i<n:
-         print (i)
-         kfs.append (self._cells(100))
-         i = i + 1
+         kf = randomKFgenerator.true_kf(1)[0]
+         if self._gt (kf):
+            kfs.append (kf)
+            i = i + 1
+            print ("true - ", i)
       return kfs
+
 
    def  false_kf (self, n=1):
       kfs = []
+      i = 0
+      randomKFgenerator = Random (self.u,4,4)
+      while i<n:
+         kf = randomKFgenerator.true_kf(1)[0]
+         if not self._gt (kf):
+            kfs.append (kf)
+            i = i + 1
+            print ("false - ", i)
       return kfs
+

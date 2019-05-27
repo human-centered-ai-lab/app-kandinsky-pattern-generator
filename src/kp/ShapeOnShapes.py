@@ -121,20 +121,25 @@ class ShapeOnShape (KandinskyTruthInterfce):
       return kf
 
    def  true_kf (self, n=1):
+      print ("MAKE TRUE")
       kfs = []
-      for i in range (n):        
+      for i in range (n):     
+         print (i)  
          kf = self._shapesOnShapes (True)
          kfs.append(kf)
       return kfs   
 
    def  almost_true_kf (self, n=1):
       kfs = []
+      print ("MAKE CONTRAFACTUALS")
       for i in range (n):
+         print (i)
          kf = self._shapesOnShapes (False)
          kfs.append(kf)
       return kfs 
 
    def  false_kf (self, n=1):
+      print ("MAKE FALSE")
       # we are  shure that random image does not contain "shapes on shapes" 
       t = self.min+self.max
       rg = Random (self.u,t,t)

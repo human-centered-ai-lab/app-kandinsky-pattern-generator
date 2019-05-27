@@ -18,8 +18,10 @@ class ContainsRedObjects (KandinskyTruthInterfce):
    def  true_kf (self, n=1):
       kfs = []
       i = 0
+      print ("MAKE TRUE")
       randomKFgenerator = Random (self.u,self.min,self.max)
       while i<n:
+         print (i)
          kf = randomKFgenerator.true_kf(1)[0]
          hasRed = False
          for s in kf:
@@ -35,7 +37,10 @@ class ContainsRedObjects (KandinskyTruthInterfce):
       i = 0
       randomKFgenerator = Random (self.u,self.min,self.max)
       kfs = randomKFgenerator.true_kf(n)
+      print ("MAKE FALSE")
       for kf in kfs:
+         print (i)
+
          for s in kf:
             if s.color == "red":
                s.color = "blue"

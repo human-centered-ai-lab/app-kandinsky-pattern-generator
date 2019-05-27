@@ -2,6 +2,7 @@ import os
 
 from PIL import Image
 from kp import KandinskyUniverse, RandomKandinskyFigure, SimpleObjectAndShape, ShapeOnShapes, NumbersKandinskyFigure,  KandinskyCaptions
+import cv2
 
 u  = KandinskyUniverse.SimpleUniverse()
 cg = KandinskyCaptions.CaptionGenerator (u)
@@ -25,6 +26,8 @@ def generateSimpleNumbersCaptions (basedir, kfgen, n=50, width=200):
     for (i, kf) in enumerate(kfgen.true_kf (n)):
         image = KandinskyUniverse.kandinskyFigureAsImage (kf, width)
         image.save (basedir + "/%06d" % i + ".png")       
+        # imagePIL = KandinskyUniverse.kandinskyFigureAsImagePIL (kf, width)
+        # image.save (basedir + "/%06d" % i + "_PIL.png")       
         capt_numbers_file.write(str(i) + '\t' +  cg.simpleNumbers (kf)+'\n' )
     capt_numbers_file.close()
     
@@ -33,7 +36,8 @@ def generateClasses (basedir, kfgen, n=50,  width=200, contrafactuals = False):
     os.makedirs(basedir + "/false", exist_ok=True)
     for (i, kf) in enumerate(kfgen.true_kf (n)):
         image = KandinskyUniverse.kandinskyFigureAsImage (kf, width)
-        image.save (basedir + "/true/%06d" % i + ".png")
+        image.save (basedir + "/true/%06d" % i + ".png")  
+
     for (i, kf) in  enumerate(kfgen.false_kf (n)):
         image = KandinskyUniverse.kandinskyFigureAsImage (kf, width)
         image.save (basedir + "/false/%06d" % i + ".png")
@@ -47,21 +51,19 @@ if (__name__ == '__main__'):
 
     print('Welcome to the Kandinsky Figure Generator') 
 
-    # cellkf  = SimpleObjectAndShape.Cells (u,5,5)
-    # generateClasses ("../test/cells", cellkf, 10, 512)
-    
-    
-    # fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,5,5)
-    # generateClasses ("../test/number_5", fixednumberskf, 10, contrafactuals = True)
+    fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,5,5)
+    generateClasses ("../test/number_5", fixednumberskf, 10, contrafactuals = True, width=600)
+    fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,3,3)
+    generateClasses ("../test/number_3", fixednumberskf, 10, contrafactuals = True, width=600)
 
-    # randomkf =  RandomKandinskyFigure.Random (u,1,100)
-    # generateSimpleNumbersCaptions ("../test/randomnumbers", randomkf, 1000)
+    randomkf =  RandomKandinskyFigure.Random (u,1,10)
+    generateSimpleNumbersCaptions ("../test/randomnumbers", randomkf, 10, width=600)
 
-    # redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
-    # generateClasses ("../test/onered", redobjects, 50)
+    redobjects = SimpleObjectAndShape.ContainsRedObjects(u,4,4)
+    generateClasses ("../test/onered", redobjects, 50, width=600,)
 
-    # triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
-    # generateClasses ("../test/onetriangle", triangleobjects, 50)
+    triangleobjects = SimpleObjectAndShape.ContainsTriangles(u,4,4)
+    generateClasses ("../test/onetriangle", triangleobjects, 50, width=600,)
 
     shapeOnshapeObjects = ShapeOnShapes.ShapeOnShape (u, 20, 40)
-    generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, n=1000, width=600, contrafactuals = True)
+    generateClasses ("../test/shapeonshapes", shapeOnshapeObjects, n=100, width=600, contrafactuals = True)

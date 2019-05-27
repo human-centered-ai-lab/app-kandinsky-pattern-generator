@@ -1,7 +1,8 @@
 import math
 
 import numpy as np
-from PIL import Image, ImageDraw
+import cv2
+from PIL import Image, ImageDraw, ImageColor
 
 
 class kandinskyShape:
@@ -45,7 +46,7 @@ def triangle (d,cx,cy,s,f):
         d.polygon([(cx,cy-s), (cx+dx, cy+dy), (cx-dx,cy+dy)], fill = f)
 
 
-def kandinskyFigureAsImage (shapes, width=200, subsampling = 2):
+def kandinskyFigureAsImagePIL (shapes, width=200, subsampling = 2):
 
   image = Image.new("RGBA", (subsampling*width,subsampling*width), (220,220,220,255))
   d = ImageDraw.Draw(image)
@@ -56,6 +57,48 @@ def kandinskyFigureAsImage (shapes, width=200, subsampling = 2):
   if subsampling>1:
     image.thumbnail( (width,width), Image.ANTIALIAS)
 
+  return image
+
+
+def kandinskyFigureAsImage (shapes, width=200, subsampling = 2):
+
+  w = subsampling * width
+  img = np.zeros((w, w, 3), np.uint8)
+  img[:, :] = [128, 128, 128]
+
+  for s in shapes:
+      # not sure if this is the right color for openCV
+      rgbcolorvalue = ImageColor.getrgb (s.color)
+
+      if s.shape == "circle":
+          size  =  0.5 * 0.6 * math.sqrt (4 * w*s.size * w*s.size / math.pi)
+#         print (rgbcolorvalue)
+          cx = round(w*s.x)
+          cy = round(w*s.y)
+          cv2.circle (img,(cx, cy), round(size), rgbcolorvalue, -1)
+
+      if s.shape == "triangle":
+          r = math.radians(30)
+          size  = 0.5 * math.sqrt(3) * w*s.size / 3
+          dx = size * math.cos (r) 
+          dy = size * math.sin (r) 
+          p1 = (round(w*s.x), round(w*s.y-size))
+          p2 = (round(w*s.x+dx), round(w*s.y+dy))
+          p3 = (round(w*s.x-dx), round(w*s.y+dy))
+          points = np.array([p1, p2, p3])
+          cv2.fillConvexPoly (img, points, rgbcolorvalue, 1)
+
+      if s.shape == "square":
+          size  =  0.5 * 0.6  * w*s.size 
+          xs = round(w*s.x - size)
+          ys = round(w*s.y - size)
+          xe = round(w*s.x + size)
+          ye = round(w*s.y + size)
+          cv2.rectangle (img,(xs, ys), (xe,ye), rgbcolorvalue, -1)
+
+  img_resampled= cv2.resize(img, (width, width), interpolation=cv2.INTER_AREA)        
+  image = Image.fromarray(img_resampled)
+  
   return image
 
 def overlaps (shapes, width=1024):

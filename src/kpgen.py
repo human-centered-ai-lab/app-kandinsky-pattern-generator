@@ -53,6 +53,7 @@ if (__name__ == '__main__'):
 
     fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,5,5)
     generateClasses ("../test/number_5", fixednumberskf, 10, contrafactuals = True, width=600)
+    
     fixednumberskf = NumbersKandinskyFigure.FixedNumber (u,3,3)
     generateClasses ("../test/number_3", fixednumberskf, 10, contrafactuals = True, width=600)
 

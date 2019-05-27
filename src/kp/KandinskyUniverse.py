@@ -46,7 +46,7 @@ def triangle (d,cx,cy,s,f):
         d.polygon([(cx,cy-s), (cx+dx, cy+dy), (cx-dx,cy+dy)], fill = f)
 
 
-def kandinskyFigureAsImagePIL (shapes, width=200, subsampling = 2):
+def kandinskyFigureAsImagePIL (shapes, width=600, subsampling = 4):
 
   image = Image.new("RGBA", (subsampling*width,subsampling*width), (220,220,220,255))
   d = ImageDraw.Draw(image)
@@ -60,7 +60,7 @@ def kandinskyFigureAsImagePIL (shapes, width=200, subsampling = 2):
   return image
 
 
-def kandinskyFigureAsImage (shapes, width=200, subsampling = 2):
+def kandinskyFigureAsImage (shapes, width=600, subsampling = 4):
 
   w = subsampling * width
   img = np.zeros((w, w, 3), np.uint8)
@@ -72,7 +72,6 @@ def kandinskyFigureAsImage (shapes, width=200, subsampling = 2):
 
       if s.shape == "circle":
           size  =  0.5 * 0.6 * math.sqrt (4 * w*s.size * w*s.size / math.pi)
-#         print (rgbcolorvalue)
           cx = round(w*s.x)
           cy = round(w*s.y)
           cv2.circle (img,(cx, cy), round(size), rgbcolorvalue, -1)

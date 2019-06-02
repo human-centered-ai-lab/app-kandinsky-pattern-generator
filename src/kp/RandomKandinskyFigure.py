@@ -68,4 +68,5 @@ class Random (KandinskyTruthInterfce):
       for i in range (n):
          kf = self._randomkf(self.min, self.max)
          kfs.append(kf)
+         print (i)
       return kfs   

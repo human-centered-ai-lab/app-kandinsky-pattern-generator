@@ -139,8 +139,8 @@ class twoPairsOnlyOneWithSameColor (KandinskyTruthInterfce):
           for c in self.u.kandinsky_colors: 
                if ncs[p1][c] > 0:
                   n_of_colors = n_of_colors + 1 
-          if (n_of_colors == 3):
-              # only if we have 3 different colors we can have two pairs not with the same colors .....
+          if (n_of_colors == 3) or (n_of_colors == 2):
+              # only if we have 2 or 3 different colors we can have two pairs not with the same colors .....
               is_valid = True  
 
        return is_valid

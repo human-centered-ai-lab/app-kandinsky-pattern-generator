@@ -226,7 +226,7 @@ class ShapeOnShape (KandinskyTruthInterfce):
 
    def  false_kf (self, n=1):
       print ("MAKE FALSE")
-      # we are  shure that random image does not contain "shapes on shapes" 
+      # we are  sure that random image does not contain "shapes on shapes" 
       t = self.min+self.max
       rg = Random (self.u,t,t)
       return rg.true_kf (n)

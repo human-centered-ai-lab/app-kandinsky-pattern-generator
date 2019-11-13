@@ -4,3 +4,5 @@ test
 *.pyc
 src/kp/Chords.py
 src/makechords.py
+/.idea
+/.mypy_cache

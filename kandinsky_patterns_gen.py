@@ -7,6 +7,7 @@
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 import os
 import math
 import random
@@ -302,15 +303,34 @@ def descPairs(shapes):
 
 
 ########################################################################################################################
-# [1.] Generate Captions ===============================================================================================
+# Generate lots of images and their corresponding annotations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ########################################################################################################################
-f = lambda: random_shapes(6, 8)
-shapes = f()
-while overlaps(shapes) or len(descPairs(shapes)) == 0:
+gen_img_annotations_nr = 100
+for image_index in range(1, gen_img_annotations_nr + 1):
+
+    f = lambda: random_shapes(6, 8)
     shapes = f()
+    while overlaps(shapes) or len(descPairs(shapes)) == 0:
+        shapes = f()
 
-print(description_color_shape_size(shapes))
-print(describe_numbers(shapes))
-print(descPairs(shapes))
+    caption_1 = description_color_shape_size(shapes)
+    caption_2 = describe_numbers(shapes)
+    caption_3 = descPairs(shapes)
 
-kandinsky_figure(shapes, 4)
+    # print("Captions:")
+    # print(f"Caption 1: {caption_1}")
+    # print(f"Caption 2: {caption_2}")
+    # print(f"Caption 3: {caption_3}")
+
+    f = open(os.path.join("data", "OutputData", "captions", "annotations", f"annotations_{image_index}.txt"), "w+")
+    f.write(f"{caption_1}\n")
+    f.write(f"{caption_2}\n")
+    f.write(f"{caption_3}\n")
+    f.close()
+
+    img = kandinsky_figure(shapes, 4)
+    # plt.imshow(img)
+    # plt.show()
+
+    img.save(os.path.join("data", "OutputData", "captions", "images", f"image_{image_index}.png"), "PNG")
+

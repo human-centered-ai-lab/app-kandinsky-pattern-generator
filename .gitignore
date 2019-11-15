@@ -7,3 +7,4 @@ src/makechords.py
 /.idea
 /.mypy_cache
 /randomcaptions
+/data
